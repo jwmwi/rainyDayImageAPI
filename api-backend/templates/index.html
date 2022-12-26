@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Rainy Day Image API</title>
+    </head>
+    <body>
+        <form action="http://localhost:5000/imageUpload" enctype="multipart/form-data" method="POST">
+            <input type="file" name="picture" />
+            <input type="submit" value="Upload a picture"/>
+        </form>
+        <img src="http://localhost:5000/lastimage">
+    </body>
+</html>
