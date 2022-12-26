@@ -5,10 +5,10 @@
         <title>Rainy Day Image API</title>
     </head>
     <body>
-        <form action="http://localhost:5000/imageUpload" enctype="multipart/form-data" method="POST">
+        <form action="/imageUpload" enctype="multipart/form-data" method="POST">
             <input type="file" name="picture" />
             <input type="submit" value="Upload a picture"/>
         </form>
-        <img src="http://localhost:5000/lastimage" width="150">
+        <img src="/lastimage" width="150">
     </body>
 </html>
