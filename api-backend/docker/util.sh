@@ -1,15 +1,21 @@
 #!/bin/bash
 
+IMAGE_NAME=rainydayimageapi
+IMAGE_VERSION=1.0.0
+IMAGE=${IMAGE_NAME}:${IMAGE_VERSION}
+CONTAINER_NAME=api
+IMAGE_DIRECTORY=~/images.cache
+
 #### for simple debug
 # D=echo
 D=""
 
 function build() {
-  ${D} docker build -t pyapi:1 .
+  ${D} docker build -t ${IMAGE} .
 } 
 
 function rmapi() {
-  ${D} docker rm api
+  ${D} docker rm ${CONTAINER_NAME}
 }
 
 function rerun () {
@@ -18,7 +24,11 @@ function rerun () {
 }
 
 function runapi () {
-  ${D} docker run --name api -p 5000:5000 pyapi:1
+  ${D} docker run \
+      -v ${IMAGE_DIRECTORY}:/images \
+      --name ${CONTAINER_NAME} \
+      -p 5000:5000 \
+      ${IMAGE}
 }
 
 function rebuild () {
