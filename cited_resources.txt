@@ -1,0 +1,6 @@
+# there are certainly more, but these were sticking points.
+https://stackoverflow.com/questions/44728047/return-multiple-image-files-with-flask
+https://python-adv-web-apps.readthedocs.io/en/latest/flask3.html
+
+# dont quit 
+https://www.youtube.com/watch?v=liFHsc8h0hc
