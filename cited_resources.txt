@@ -2,5 +2,26 @@
 https://stackoverflow.com/questions/44728047/return-multiple-image-files-with-flask
 https://python-adv-web-apps.readthedocs.io/en/latest/flask3.html
 
+# front end.. look here next
+https://www.freecodecamp.org/news/how-to-make-an-image-search-app-in-react/
+https://github.com/bbachi/react-nodejs-docker-compose/blob/master/Dockerfile
+
+
+https://python-adv-web-apps.readthedocs.io/en/latest/flask3.html
+
+
 # dont quit 
 https://www.youtube.com/watch?v=liFHsc8h0hc
+
+
+# possible inspo
+https://code.visualstudio.com/docs/python/tutorial-flask
+https://programminghistorian.org/en/lessons/creating-apis-with-python-and-flask
+https://towardsdatascience.com/the-right-way-to-build-an-api-with-python-cd08ab285f8f
+https://medium.com/bb-tutorials-and-thoughts/react-local-development-with-docker-compose-5a247710f997
+https://www.freecodecamp.org/news/how-to-make-an-image-search-app-in-react/
+https://www.knowledgehut.com/blog/web-development/create-react-project
+https://www.knowledgehut.com/blog/web-development/how-to-dockerize-react-app
+
+### last one // recent 
+https://medium.com/bb-tutorials-and-thoughts/react-local-development-with-docker-compose-5a247710f997
