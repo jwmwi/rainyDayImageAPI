@@ -10,11 +10,20 @@ from elasticsearch import Elasticsearch
 app = Flask(__name__)
 
 ## look for env vars
+## not really sure proto should be an option. 
+es_proto = os.environ.get('CONFIG_ES_PROTO', "https")
 es_server = os.environ.get('CONFIG_ES_SERVER', "127.0.0.1")
 es_port = os.environ.get('CONFIG_ES_PORT', "9200")
 es_index = os.environ.get('CONFIG_ES_INDEX', "default_test_index")
 es_api_id = os.environ.get('CONFIG_ES_API_ID', "api_id")
 es_api_key = os.environ.get('CONFIG_ES_API_KEY', "api_key")
+
+### sample ES 
+#
+#   get the certs right when you do it.. good from home testing for now.
+#
+# es = Elasticsearch(hosts='https://127.0.0.1:9200', verify_certs=False, api_key=(es_api_id, es_api_key))
+# es = Elasticsearch(hosts=es_proto+'://'+es_server+':'+es_port, verify_certs=False, api_key=(es_api_id, es_api_key))
 
 base_image_dir = "/images"
 
