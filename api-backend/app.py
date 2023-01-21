@@ -2,6 +2,7 @@ from flask import Flask, render_template, Response, request
 from werkzeug.utils import secure_filename
 import hashlib
 import os
+from elasticsearch import Elasticsearch
 
 # obviously don't do this, fun for testing
 # allimages = []
@@ -12,8 +13,8 @@ app = Flask(__name__)
 es_server = os.environ.get('CONFIG_ES_SERVER', "127.0.0.1")
 es_port = os.environ.get('CONFIG_ES_PORT', "9200")
 es_index = os.environ.get('CONFIG_ES_INDEX', "default_test_index")
-es_user = os.environ.get('CONFIG_ES_USER', "elastic")
-es_password = os.environ.get('CONFIG_ES_PW', "bad_password")
+es_api_id = os.environ.get('CONFIG_ES_API_ID', "api_id")
+es_api_key = os.environ.get('CONFIG_ES_API_KEY', "api_key")
 
 base_image_dir = "/images"
 
