@@ -41,7 +41,9 @@ es = Elasticsearch(hosts=es_proto+'://'+es_server+':'+es_port, verify_certs=Fals
 base_image_dir = "/images"
 
 # until we figure out how we want to setup files.
-allimages = []
+# allimages = []
+
+global lastimage
 
 @app.route('/')
 def hello():
@@ -56,30 +58,42 @@ def upload():
     filename = secure_filename(picture.filename)
     mimetype = picture.mimetype
     image = picture.read()
-    uniquehash = hashlib.md5(image)
-#    j = '{ filename = "' + filename + '", mimetype = "' + mimetype + '" } '
-    j = '{ filename = "' + filename + '", mimetype = "' + mimetype + '", hash = "' + uniquehash.hexdigest() + '" } '
-    allimages.append([image,filename,mimetype,j,uniquehash.hexdigest()])
+    uniquehash = hashlib.md5(image).hexdigest()
+    j = '{ filename = "' + filename + '", mimetype = "' + mimetype + '", hash = "' + uniquehash + '" } '
+    ## definitly do something to prevent over write, 
+    with open(base_image_dir + "/" + uniquehash , 'wb') as f:
+        f.write(image)
+    with open(base_image_dir + "/last", 'wb') as f:
+        f.write(image)
+    ##
+    ## for now, but get this off to elastic. 
+    with open(base_image_dir + "/json/" + uniquehash , 'w') as f:
+        f.write(j)
+
     return 'image uploaded' + j , 200
 
 @app.route('/lastimage')
 def getlastimage():
-    lastid=len(allimages)-1
-    return getImagebyID(lastid)
+    # lastid=len(allimages)-1
+    return getImagebyHash("last")
+#     return "funtion currently deprecated", 400
 
-@app.route('/image/<int:id>')
-def getImagebyID(id):
-    if id < len(allimages):
-        return Response(allimages[id][0], mimetype=allimages[id][2])
-    else:
-        return "Image not found",404
+# @app.route('/image/<int:id>')
+# def getImagebyID(id):
+#     if id < len(allimages):
+#         return Response(allimages[id][0], mimetype=allimages[id][2])
+#     else:
+#         return "Image not found",404
 
-@app.route('/imageh/<uniquehash>')
+@app.route('/image/<uniquehash>')
 def getImagebyHash(uniquehash):
-    if type(hash) is not str:
+    
+    if type(uniquehash) is not str:
         return "Image not found", 404
+
     uniquehash = secure_filename(uniquehash)
     full_filename = base_image_dir + "/" + uniquehash 
+
     if os.path.exists(full_filename):
         image = open(base_image_dir + "/" + uniquehash , 'rb').read()
         return Response(image, mimetype="image/jpeg")
@@ -92,40 +106,46 @@ def showimages():
         'results.html', results=listimages()
         )
 
+# def listimages():
+#     results = []
+#     for i in range(len(allimages)):
+#         ## or prepend /image/
+#         link = str(i)
+#         results.append(link)
+#     return results
+#     ## figure out what to return
+#     ## array of links for jinja2 
+
 def listimages():
     results = []
-    for i in range(len(allimages)):
-        ## or prepend /image/
-        link = str(i)
-        results.append(link)
-    return results
-    ## figure out what to return
-    ## array of links for jinja2 
+    for i in os.listdir('/images'):
+        if i != 'json' and i != 'last':
+            results.append(i)
+    return results    
 
-@app.route('/save')
-def saveimages():
-    for i in range(len(allimages)):
-        image,filename,mimetype,j,uniquehash = allimages[i]
-        print("filename :" + filename)
-        print("j = " + j )
-        print("mime = " + mimetype)
-        print("hash = " + uniquehash )
-        print()
-#        open(rw, base_image_dir + "/" + uniquehash )
-        with open(base_image_dir + "/" + uniquehash , 'wb') as f:
-            f.write(image)
-        with open(base_image_dir + "/" + uniquehash + ".json" , 'w') as f:
-            f.write(j)
-    return showimages()
-
+# @app.route('/save')
+# def saveimages():
+#     for i in range(len(allimages)):
+#         image,filename,mimetype,j,uniquehash = allimages[i]
+#         print("filename :" + filename)
+#         print("j = " + j )
+#         print("mime = " + mimetype)
+#         print("hash = " + uniquehash )
+#         print()
+# #        open(rw, base_image_dir + "/" + uniquehash )
+#         with open(base_image_dir + "/" + uniquehash , 'wb') as f:
+#             f.write(image)
+#         with open(base_image_dir + "/json/" + uniquehash , 'w') as f:
+#             f.write(j)
+#     return showimages()
 
 @app.route('/jdump')
 def dumpJ():
-    s=""
-    for i in allimages:
-        s=s+i[3]+'\n'
-    return Response(s, 200)
+#    s=""
+#    for i in allimages:
+#        s=s+i[3]+'\n'
+    return "function currently deprecated", 400
+#    return Response(s, 200)
 
 if __name__ == "__main__":
     app.run()
-    
