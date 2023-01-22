@@ -72,7 +72,19 @@ def getImagebyID(id):
     if id < len(allimages):
         return Response(allimages[id][0], mimetype=allimages[id][2])
     else:
-        return "no such image", 400
+        return "Image not found",404
+
+@app.route('/imageh/<uniquehash>')
+def getImagebyHash(uniquehash):
+    if type(hash) is not str:
+        return "Image not found", 404
+    uniquehash = secure_filename(uniquehash)
+    full_filename = base_image_dir + "/" + uniquehash 
+    if os.path.exists(full_filename):
+        image = open(base_image_dir + "/" + uniquehash , 'rb').read()
+        return Response(image, mimetype="image/jpeg")
+    else:
+        return "Image not found",404
 
 @app.route('/imagelist')
 def showimages():
