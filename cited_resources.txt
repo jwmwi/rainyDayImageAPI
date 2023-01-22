@@ -25,3 +25,8 @@ https://www.knowledgehut.com/blog/web-development/how-to-dockerize-react-app
 
 ### last one // recent 
 https://medium.com/bb-tutorials-and-thoughts/react-local-development-with-docker-compose-5a247710f997
+
+
+# ES
+https://www.elastic.co/guide/en/elasticsearch/client/python-api/master/examples.html
+https://elasticsearch-py.readthedocs.io/en/v8.6.0/

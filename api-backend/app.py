@@ -23,7 +23,20 @@ es_api_key = os.environ.get('CONFIG_ES_API_KEY', "api_key")
 #   get the certs right when you do it.. good from home testing for now.
 #
 # es = Elasticsearch(hosts='https://127.0.0.1:9200', verify_certs=False, api_key=(es_api_id, es_api_key))
-# es = Elasticsearch(hosts=es_proto+'://'+es_server+':'+es_port, verify_certs=False, api_key=(es_api_id, es_api_key))
+es = Elasticsearch(hosts=es_proto+'://'+es_server+':'+es_port, verify_certs=False, api_key=(es_api_id, es_api_key))
+
+# r = es.search(index=es_index)
+# hash = r['hits']['hits'][0]['_source']['hash']
+# for hit in r['hits']['hits']:
+#     hash = hit['_source']['hash']
+#     mimetype = hit['_source']['mimetype']
+#     filename = hit['_source']['filename']
+
+# doc = {
+#     'filename' : 'chasingbear.jpg',
+#     'mimetype' : 'image/jpeg',
+#     'hash' : 'c26f6753d864118d2863bb11d142fac5'
+# }
 
 base_image_dir = "/images"
 
