@@ -97,13 +97,5 @@ def listimages():
             results.append(i)
     return results    
 
-@app.route('/jdump')
-def dumpJ():
-#    s=""
-#    for i in allimages:
-#        s=s+i[3]+'\n'
-    return "function currently deprecated", 400
-#    return Response(s, 200)
-
 if __name__ == "__main__":
     app.run()
