@@ -26,6 +26,7 @@ function rerun () {
 function runapi () {
   ${D} docker run \
       -v ${IMAGE_DIRECTORY}:/images \
+      --env-file .env \
       --name ${CONTAINER_NAME} \
       -p 5000:5000 \
       ${IMAGE}
