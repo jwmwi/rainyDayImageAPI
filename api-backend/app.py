@@ -14,6 +14,7 @@ es_port = os.environ.get('CONFIG_ES_PORT', "9200")
 es_index = os.environ.get('CONFIG_ES_INDEX', "default_test_index")
 ## BASE64 API_KEY
 es_api_key = os.environ.get('CONFIG_ES_API_KEY', "api_key")
+es_api_key = es_api_key.strip('"')   # remove quotes from env file
 
 ### sample ES 
 #
@@ -37,7 +38,7 @@ es = Elasticsearch(hosts=es_proto+'://'+es_server+':'+es_port, verify_certs=Fals
 
 base_image_dir = "/images"
 
-global lastimage
+## global lastimage
 
 @app.route('/')
 def hello():
@@ -87,15 +88,15 @@ def getImagebyHash(uniquehash):
 @app.route('/imagelist')
 def showimages():
     return render_template(
-        'results.html', results=listimages()
+        'results.html', results= listimagese()
         )
 
 def listimages():
     results = []
-    for i in os.listdir('/images'):
-        if i != 'json' and i != 'last':
-            results.append(i)
-    return results    
+    r = es.search(index=es_index)
+    for p in r['hits']['hits']:
+        results.append(p['_source']['hash'])
+    return results
 
 if __name__ == "__main__":
     app.run()
