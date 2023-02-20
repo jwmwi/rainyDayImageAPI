@@ -4,9 +4,6 @@ import hashlib
 import os
 from elasticsearch import Elasticsearch
 
-# obviously don't do this, fun for testing
-# allimages = []
-
 app = Flask(__name__)
 
 ## look for env vars
@@ -15,15 +12,15 @@ es_proto = os.environ.get('CONFIG_ES_PROTO', "https")
 es_server = os.environ.get('CONFIG_ES_SERVER', "127.0.0.1")
 es_port = os.environ.get('CONFIG_ES_PORT', "9200")
 es_index = os.environ.get('CONFIG_ES_INDEX', "default_test_index")
-es_api_id = os.environ.get('CONFIG_ES_API_ID', "api_id")
+## BASE64 API_KEY
 es_api_key = os.environ.get('CONFIG_ES_API_KEY', "api_key")
 
 ### sample ES 
 #
 #   get the certs right when you do it.. good from home testing for now.
 #
-# es = Elasticsearch(hosts='https://127.0.0.1:9200', verify_certs=False, api_key=(es_api_id, es_api_key))
-es = Elasticsearch(hosts=es_proto+'://'+es_server+':'+es_port, verify_certs=False, api_key=(es_api_id, es_api_key))
+# es = Elasticsearch(hosts='https://127.0.0.1:9200', verify_certs=False, api_key='')
+es = Elasticsearch(hosts=es_proto+'://'+es_server+':'+es_port, verify_certs=False, api_key=es_api_key)
 
 # r = es.search(index=es_index)
 # hash = r['hits']['hits'][0]['_source']['hash']
@@ -40,14 +37,10 @@ es = Elasticsearch(hosts=es_proto+'://'+es_server+':'+es_port, verify_certs=Fals
 
 base_image_dir = "/images"
 
-# until we figure out how we want to setup files.
-# allimages = []
-
 global lastimage
 
 @app.route('/')
 def hello():
-    #return '<h3>Hello</h3>'
     return render_template('index.html')
 
 @app.route('/imageUpload', methods=["POST"])
@@ -74,16 +67,7 @@ def upload():
 
 @app.route('/lastimage')
 def getlastimage():
-    # lastid=len(allimages)-1
     return getImagebyHash("last")
-#     return "funtion currently deprecated", 400
-
-# @app.route('/image/<int:id>')
-# def getImagebyID(id):
-#     if id < len(allimages):
-#         return Response(allimages[id][0], mimetype=allimages[id][2])
-#     else:
-#         return "Image not found",404
 
 @app.route('/image/<uniquehash>')
 def getImagebyHash(uniquehash):
@@ -106,38 +90,12 @@ def showimages():
         'results.html', results=listimages()
         )
 
-# def listimages():
-#     results = []
-#     for i in range(len(allimages)):
-#         ## or prepend /image/
-#         link = str(i)
-#         results.append(link)
-#     return results
-#     ## figure out what to return
-#     ## array of links for jinja2 
-
 def listimages():
     results = []
     for i in os.listdir('/images'):
         if i != 'json' and i != 'last':
             results.append(i)
     return results    
-
-# @app.route('/save')
-# def saveimages():
-#     for i in range(len(allimages)):
-#         image,filename,mimetype,j,uniquehash = allimages[i]
-#         print("filename :" + filename)
-#         print("j = " + j )
-#         print("mime = " + mimetype)
-#         print("hash = " + uniquehash )
-#         print()
-# #        open(rw, base_image_dir + "/" + uniquehash )
-#         with open(base_image_dir + "/" + uniquehash , 'wb') as f:
-#             f.write(image)
-#         with open(base_image_dir + "/json/" + uniquehash , 'w') as f:
-#             f.write(j)
-#     return showimages()
 
 @app.route('/jdump')
 def dumpJ():
