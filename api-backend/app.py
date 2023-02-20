@@ -2,6 +2,7 @@ from flask import Flask, render_template, Response, request
 from werkzeug.utils import secure_filename
 import hashlib
 import os
+from datetime import datetime
 from elasticsearch import Elasticsearch
 
 app = Flask(__name__)
@@ -23,19 +24,6 @@ es_api_key = es_api_key.strip('"')   # remove quotes from env file
 # es = Elasticsearch(hosts='https://127.0.0.1:9200', verify_certs=False, api_key='')
 es = Elasticsearch(hosts=es_proto+'://'+es_server+':'+es_port, verify_certs=False, api_key=es_api_key)
 
-# r = es.search(index=es_index)
-# hash = r['hits']['hits'][0]['_source']['hash']
-# for hit in r['hits']['hits']:
-#     hash = hit['_source']['hash']
-#     mimetype = hit['_source']['mimetype']
-#     filename = hit['_source']['filename']
-
-# doc = {
-#     'filename' : 'chasingbear.jpg',
-#     'mimetype' : 'image/jpeg',
-#     'hash' : 'c26f6753d864118d2863bb11d142fac5'
-# }
-
 base_image_dir = "/images"
 
 ## global lastimage
@@ -53,16 +41,24 @@ def upload():
     mimetype = picture.mimetype
     image = picture.read()
     uniquehash = hashlib.md5(image).hexdigest()
-    j = '{ filename = "' + filename + '", mimetype = "' + mimetype + '", hash = "' + uniquehash + '" } '
+
+    # no longer writing out to file. 
+    # j = '{ filename = "' + filename + '", mimetype = "' + mimetype + '", hash = "' + uniquehash + '" } '
+
+    doc = { "filename": filename, 
+             "mimetype": mimetype, 
+             "hash": uniquehash,
+             "uploadtime": datetime.now() 
+             }
+
     ## definitly do something to prevent over write, 
     with open(base_image_dir + "/" + uniquehash , 'wb') as f:
         f.write(image)
     with open(base_image_dir + "/last", 'wb') as f:
         f.write(image)
-    ##
-    ## for now, but get this off to elastic. 
-    with open(base_image_dir + "/json/" + uniquehash , 'w') as f:
-        f.write(j)
+
+    # image data goes to ES.. 
+    es.index(index=es_index,document=doc)
 
     return 'image uploaded' + j , 200
 
@@ -88,7 +84,7 @@ def getImagebyHash(uniquehash):
 @app.route('/imagelist')
 def showimages():
     return render_template(
-        'results.html', results= listimagese()
+        'results.html', results= listimages()
         )
 
 def listimages():
