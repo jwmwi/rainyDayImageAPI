@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 ## look for env vars
 ## not really sure proto should be an option. 
-es_proto = os.environ.get('CONFIG_ES_PROTO', "https")
+es_proto = os.environ.get('CONFIG_ES_PROTO', "http")
 es_server = os.environ.get('CONFIG_ES_SERVER', "127.0.0.1")
 es_port = os.environ.get('CONFIG_ES_PORT', "9200")
 es_index = os.environ.get('CONFIG_ES_INDEX', "default_test_index")
@@ -22,6 +22,7 @@ es_api_key = es_api_key.strip('"')   # remove quotes from env file
 #   get the certs right when you do it.. good from home testing for now.
 #
 # es = Elasticsearch(hosts='https://127.0.0.1:9200', verify_certs=False, api_key='')
+print(es_proto+'://'+es_server+':'+es_port)
 es = Elasticsearch(hosts=es_proto+'://'+es_server+':'+es_port, verify_certs=False, api_key=es_api_key)
 
 base_image_dir = "/images"
@@ -52,6 +53,9 @@ def upload():
              }
 
     ## definitly do something to prevent over write, 
+    ## do more with hash exists.. compare images etc. 
+    if os.path.exists(base_image_dir+"/"+uniquehash):
+        return 'hash already exits', 400
     with open(base_image_dir + "/" + uniquehash , 'wb') as f:
         f.write(image)
     with open(base_image_dir + "/last", 'wb') as f:
@@ -60,7 +64,7 @@ def upload():
     # image data goes to ES.. 
     es.index(index=es_index,document=doc)
 
-    return 'image uploaded' + j , 200
+    return 'image uploaded' + str(doc) , 200
 
 @app.route('/lastimage')
 def getlastimage():
